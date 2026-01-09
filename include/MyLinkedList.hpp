@@ -2,6 +2,7 @@
 #define MYLINKEDLIST_HPP
 
 #include<iostream>
+#include<stdexcept>
 
 using namespace std;
 
@@ -22,6 +23,29 @@ public:
     MyLinkedList(){
         auto node = new Node<T>(0);
         head = node;
+        size = 0;
+    }
+
+    MyLinkedList(const MyLinkedList& other)
+    {
+        head = new Node<T>(0);
+        size =0;
+
+        if (other.head->next == nullptr) return;
+
+        auto src_node = other.head->next;
+        auto dest_node = head;
+
+        while(src_node)
+        {
+            auto new_node = new Node<T>(src_node->data);
+            dest_node->next = new_node;
+
+            dest_node = new_node;
+            src_node = src_node->next;
+
+            size++;
+        }
     }
 
     ~MyLinkedList(){
@@ -36,11 +60,11 @@ public:
         
     }
 
-    bool IsEmpty(){
+    const bool IsEmpty()const {
         return size==0;
     }
 
-    int GetSize(){
+    const int GetSize()const{
         return this->size;
     }
 
@@ -171,6 +195,19 @@ public:
 
     }
 
+    T& front(){
+        if(IsEmpty()){
+            throw std::runtime_error("List is empty");
+        }
+        return head->next->data;
+    }
+
+    const T& front()const{
+        if(IsEmpty()){
+            throw std::runtime_error("List is empty");
+        }
+        return head->next->data;
+    }
 
 
 };
