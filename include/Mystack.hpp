@@ -13,14 +13,27 @@ public:
 
     MyStack() = default;
 
+    //move ctor
+    MyStack(MyStack&& other) noexcept
+        :container(std::move(other.container)) {}
+
     ~MyStack() = default;
 
     MyStack(const MyStack& other) : container(other.container) {}
 
     MyStack& operator=(const MyStack& other)
     {
-        if(this != other){
+        if(this != &other){
             container = other.container;
+        }
+        return *this;
+    }
+
+    // move operator=
+    MyStack& operator=(MyStack&& other) noexcept
+    {
+        if(this != &other){
+            container = std::move(other.container);
         }
         return *this;
     }
@@ -29,6 +42,13 @@ public:
     {
         container.push_front(val);
     }
+
+    //move push
+    void push(T&& val)
+    {
+        container.push_front(std::move(val));
+    }
+
 
     void pop()
     {
@@ -43,7 +63,7 @@ public:
         return container.front();
     }
 
-    const T& top() const{
+    T& top() const{
 
         return container.front();
     }

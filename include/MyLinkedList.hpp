@@ -48,14 +48,43 @@ public:
         }
     }
 
+    MyLinkedList& operator=(const MyLinkedList& other)
+    {
+        if(this != &other)   //judge whether "other" is equal itself object，自赋值问题，所以比较两个指针是否指向同一个位置
+
+        {
+            auto current_node = head->next;//delete itself
+            while(current_node != nullptr)
+            {
+                auto next_node = current_node->next;
+                delete current_node;
+                current_node =next_node;
+            }
+            head->next = nullptr;
+            
+
+            auto p = other.head->next, q = this->head;
+            while(p)
+            {
+                auto new_node = new Node<T>(p->data);
+                q->next = new_node;
+                q = new_node;
+                p = p->next;
+            }
+            size = other.size;
+        }
+
+        return *this;
+
+    }
+
     ~MyLinkedList(){
         auto current_node = head;
         while(current_node != nullptr)
         {
-            Node<T>* next_node = current_node->next;
             delete current_node;
+            Node<T>* next_node = current_node->next;
             current_node = next_node;
-
         }
         
     }
@@ -80,6 +109,7 @@ public:
         while(cur_node->next != nullptr) cur_node = cur_node->next;
         Node<T>* new_node = new Node<T>(val);
         cur_node->next = new_node;
+        size++;
     }
 
     void pop_front(){
@@ -88,6 +118,7 @@ public:
             head->next = head->next->next;
             delete del_node;
         }
+        size--;
     }
 
     void pop_back(){
@@ -102,9 +133,10 @@ public:
             p->next = nullptr;
             delete q;
         }
+        size--;
     }
 
-    bool find(const T& val){
+    bool find(const T& val)const{
         Node<T>* node = head->next;
         while(node)
         {
@@ -130,6 +162,11 @@ public:
 
     void insert(const int& index, const  T& val)
     {
+        if(index<0||index>size) 
+        {
+            cout << "insert false!---index is not in correct size!" <<endl;
+            return;
+        }
         Node<T> *p = head, *new_node = new Node<T>(val);
         for(int i=0;i<index;i++)
         {
@@ -137,6 +174,7 @@ public:
         }
         new_node -> next = p -> next;
         p ->next = new_node;
+        size++;
 
     }
 
@@ -144,6 +182,11 @@ public:
 
     void remove_at(const int& index)
     {
+        if(index<0||index>size) 
+        {
+            cout << "remove_at false!---index is not in correct size!" <<endl;
+            return;
+        }
         auto p = head;
         for(int i=0;i<index;i++)
         {
@@ -152,6 +195,7 @@ public:
         auto q= p->next;
         p->next = q->next;
         delete q;
+        size--;
     }
 
     // reverse the list
@@ -186,8 +230,8 @@ public:
         while(fast)
         {
             fast = fast->next;
-            slow = slow->next;
             if(fast) fast = fast->next;
+            slow = slow->next;
             else break;
         }
 
