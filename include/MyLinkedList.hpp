@@ -117,8 +117,9 @@ public:
             Node<T>* del_node = head->next;
             head->next = head->next->next;
             delete del_node;
+            size--;
         }
-        size--;
+        
     }
 
     void pop_back(){
@@ -132,8 +133,9 @@ public:
             }
             p->next = nullptr;
             delete q;
+            size--;
         }
-        size--;
+        
     }
 
     bool find(const T& val)const{
@@ -230,8 +232,8 @@ public:
         while(fast)
         {
             fast = fast->next;
-            if(fast) fast = fast->next;
-            slow = slow->next;
+            if(fast) {fast = fast->next;
+            slow = slow->next;}
             else break;
         }
 
